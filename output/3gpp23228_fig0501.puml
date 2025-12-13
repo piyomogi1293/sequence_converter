@@ -1,0 +1,21 @@
+@startuml 3GPP TS23.228 figure 5.1
+
+participant "UE" as U
+participant "P-CSCF" as P
+participant "I-CSCF" as I
+participant "HSS" as H
+participant "S-CSCF" as S
+
+U -> P : 1. Register
+P -> I : 2. Register
+I -> H : 3. Cx-Query/Cx-Select-Pull
+H -> I : 4. Cx-Query Resp/Cx-Select-Pull Resp
+I -> S : 5. Register
+S -> H : 6. Cx-put/Cx-Pull
+H -> S : 7. Cx-Put Resp/Cx-Pull Resp
+note over S : 8. Service Control
+S -> I : 9. 200 OK
+I -> P : 10. 200 OK
+P -> U : 11. 200 OK
+
+@enduml
