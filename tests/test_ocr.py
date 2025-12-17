@@ -1,11 +1,13 @@
 """Tests for OCREngine component."""
 
+from unittest.mock import MagicMock, patch
+
 import numpy as np
 import pytest
 from numpy.typing import NDArray
 
-from sequence_converter.models import OCRResult
-from sequence_converter.ocr import OCREngine
+from sequence_converter.models import OCREngineType, OCRResult
+from sequence_converter.ocr import EasyOCRBackend, OCREngine, TesseractBackend
 
 
 @pytest.fixture
@@ -37,16 +39,35 @@ def sample_color_image() -> NDArray[np.uint8]:
 class TestOCREngine:
     """Test suite for OCREngine."""
 
-    def test_initialization_with_default_config(self):
-        """Test that OCREngine initializes with default Tesseract config."""
+    def test_initialization_with_default_tesseract(self):
+        """Test that OCREngine initializes with default Tesseract backend."""
         ocr = OCREngine()
-        assert ocr.config == "--oem 3 --psm 6"
+        assert ocr.engine_type == OCREngineType.TESSERACT
+        assert isinstance(ocr.backend, TesseractBackend)
 
-    def test_initialization_with_custom_config(self):
+    def test_initialization_with_tesseract_explicit(self):
+        """Test that OCREngine accepts Tesseract engine type explicitly."""
+        ocr = OCREngine(engine_type=OCREngineType.TESSERACT)
+        assert ocr.engine_type == OCREngineType.TESSERACT
+        assert isinstance(ocr.backend, TesseractBackend)
+
+    def test_initialization_with_easyocr(self):
+        """Test that OCREngine accepts EasyOCR engine type."""
+        ocr = OCREngine(engine_type=OCREngineType.EASYOCR)
+        assert ocr.engine_type == OCREngineType.EASYOCR
+        assert isinstance(ocr.backend, EasyOCRBackend)
+
+    def test_initialization_with_custom_tesseract_config(self):
         """Test that OCREngine accepts custom Tesseract config."""
         custom_config = "--oem 1 --psm 3"
-        ocr = OCREngine(config=custom_config)
-        assert ocr.config == custom_config
+        ocr = OCREngine(engine_type=OCREngineType.TESSERACT, tesseract_config=custom_config)
+        assert ocr.backend.config == custom_config
+
+    def test_initialization_with_custom_easyocr_languages(self):
+        """Test that OCREngine accepts custom EasyOCR languages."""
+        languages = ["en", "ja", "ch_sim"]
+        ocr = OCREngine(engine_type=OCREngineType.EASYOCR, easyocr_languages=languages)
+        assert ocr.backend.languages == languages
 
     def test_extract_text_regions_returns_list(self, sample_grayscale_image):
         """Test that extract_text_regions returns a list of OCRResult."""
@@ -146,6 +167,215 @@ class TestOCREngine:
         # Check if any low confidence warnings were logged
         # This depends on implementation but we expect logging for conf < 60
         # Note: The actual check will depend on the logger implementation
+
+
+class TestOCREngineWithMocks:
+    """Test suite using mocks for controlled testing."""
+
+    def test_extract_text_regions_with_mock_tesseract_backend(self, sample_grayscale_image):
+        """サンプル画像からテキスト領域が抽出されることをテストする（Tesseractバックエンド）"""
+        # Arrange
+        ocr = OCREngine(engine_type=OCREngineType.TESSERACT)
+
+        with patch.object(ocr.backend, "extract_text_data") as mock_extract:
+            mock_extract.return_value = [
+                {
+                    "text": "Hello",
+                    "left": 10,
+                    "top": 20,
+                    "width": 30,
+                    "height": 15,
+                    "confidence": 95.5,
+                },
+                {
+                    "text": "World",
+                    "left": 50,
+                    "top": 30,
+                    "width": 35,
+                    "height": 18,
+                    "confidence": 88.2,
+                },
+                {
+                    "text": "Test",
+                    "left": 90,
+                    "top": 40,
+                    "width": 25,
+                    "height": 12,
+                    "confidence": 45.0,
+                },
+            ]
+
+            # Act
+            results = ocr.extract_text_regions(sample_grayscale_image)
+
+            # Assert
+            assert len(results) == 3
+            assert results[0].text == "Hello"
+            assert results[1].text == "World"
+            assert results[2].text == "Test"
+
+    def test_extract_text_regions_with_mock_easyocr_backend(self, sample_grayscale_image):
+        """サンプル画像からテキスト領域が抽出されることをテストする（EasyOCRバックエンド）"""
+        # Arrange
+        ocr = OCREngine(engine_type=OCREngineType.EASYOCR)
+
+        with patch.object(ocr.backend, "extract_text_data") as mock_extract:
+            mock_extract.return_value = [
+                {
+                    "text": "Hello",
+                    "left": 10,
+                    "top": 20,
+                    "width": 30,
+                    "height": 15,
+                    "confidence": 95.5,
+                },
+                {
+                    "text": "World",
+                    "left": 50,
+                    "top": 30,
+                    "width": 35,
+                    "height": 18,
+                    "confidence": 88.2,
+                },
+            ]
+
+            # Act
+            results = ocr.extract_text_regions(sample_grayscale_image)
+
+            # Assert
+            assert len(results) == 2
+            assert results[0].text == "Hello"
+            assert results[1].text == "World"
+
+    def test_bounding_box_coordinates_are_correct(self, sample_grayscale_image):
+        """バウンディングボックス座標が正しく取得されることをテスト"""
+        # Arrange
+        ocr = OCREngine(engine_type=OCREngineType.TESSERACT)
+
+        with patch.object(ocr.backend, "extract_text_data") as mock_extract:
+            mock_extract.return_value = [
+                {
+                    "text": "Test",
+                    "left": 25,
+                    "top": 35,
+                    "width": 45,
+                    "height": 20,
+                    "confidence": 90.0,
+                },
+            ]
+
+            # Act
+            results = ocr.extract_text_regions(sample_grayscale_image)
+
+            # Assert
+            assert len(results) == 1
+            assert results[0].bounding_box == (25, 35, 45, 20)
+
+    def test_text_color_detection_for_red(self):
+        """テキスト色判定（赤）が機能することをテスト"""
+        # Arrange - Create red text region
+        image = np.zeros((100, 100, 3), dtype=np.uint8)
+        image[20:35, 10:40] = [30, 30, 200]  # Red region (BGR: low B/G, high R)
+
+        ocr = OCREngine(engine_type=OCREngineType.TESSERACT)
+
+        with patch.object(ocr.backend, "extract_text_data") as mock_extract:
+            mock_extract.return_value = [
+                {
+                    "text": "Red",
+                    "left": 10,
+                    "top": 20,
+                    "width": 30,
+                    "height": 15,
+                    "confidence": 90.0,
+                },
+            ]
+
+            # Act
+            results = ocr.extract_text_regions(image)
+
+            # Assert
+            assert len(results) == 1
+            assert results[0].color == "red"
+
+    def test_text_color_detection_for_blue(self):
+        """テキスト色判定（青）が機能することをテスト"""
+        # Arrange - Create blue text region
+        image = np.zeros((100, 100, 3), dtype=np.uint8)
+        image[30:48, 50:85] = [200, 30, 30]  # Blue region (BGR: high B, low G/R)
+
+        ocr = OCREngine(engine_type=OCREngineType.TESSERACT)
+
+        with patch.object(ocr.backend, "extract_text_data") as mock_extract:
+            mock_extract.return_value = [
+                {
+                    "text": "Blue",
+                    "left": 50,
+                    "top": 30,
+                    "width": 35,
+                    "height": 18,
+                    "confidence": 90.0,
+                },
+            ]
+
+            # Act
+            results = ocr.extract_text_regions(image)
+
+            # Assert
+            assert len(results) == 1
+            assert results[0].color == "blue"
+
+    def test_text_color_detection_for_default(self):
+        """テキスト色判定（デフォルト）でNoneが返されることをテスト"""
+        # Arrange - Create gray text region
+        image = np.ones((100, 100, 3), dtype=np.uint8) * 128
+
+        ocr = OCREngine(engine_type=OCREngineType.TESSERACT)
+
+        with patch.object(ocr.backend, "extract_text_data") as mock_extract:
+            mock_extract.return_value = [
+                {
+                    "text": "Gray",
+                    "left": 10,
+                    "top": 20,
+                    "width": 30,
+                    "height": 15,
+                    "confidence": 90.0,
+                },
+            ]
+
+            # Act
+            results = ocr.extract_text_regions(image)
+
+            # Assert
+            assert len(results) == 1
+            assert results[0].color is None
+
+    @patch("sequence_converter.ocr.logger")
+    def test_low_confidence_text_generates_warning(self, mock_logger, sample_grayscale_image):
+        """低信頼度テキストでログ警告が出力されることをテスト"""
+        # Arrange
+        ocr = OCREngine(engine_type=OCREngineType.TESSERACT)
+
+        with patch.object(ocr.backend, "extract_text_data") as mock_extract:
+            mock_extract.return_value = [
+                {
+                    "text": "LowConf",
+                    "left": 10,
+                    "top": 20,
+                    "width": 30,
+                    "height": 15,
+                    "confidence": 45.0,
+                },
+            ]
+
+            # Act
+            results = ocr.extract_text_regions(sample_grayscale_image)
+
+            # Assert
+            assert len(results) == 1
+            assert results[0].confidence == 45.0
+            mock_logger.warning.assert_called()
 
 
 class TestOCREngineIntegration:

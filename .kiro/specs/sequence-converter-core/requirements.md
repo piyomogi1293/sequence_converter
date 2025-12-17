@@ -99,6 +99,7 @@ PNG/JPG/PDF形式のシーケンス図画像をPlantUMLテキスト形式に変�
 - 出力表現の制約
   - 色付きテキストは [#red] や [#blue] などのPlantUMLの色構文で表現する
   - ノートは note over [object_name] : [text] 構文で表現する
+- OCRエンジンはtesseractとEasyOCRに対応する
 
 ## 受け入れ基準
 

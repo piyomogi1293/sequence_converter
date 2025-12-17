@@ -1,15 +1,5 @@
 """Tests for MessageLabelMapper component."""
 
-import sys
-from pathlib import Path
-
-# テストのためにsrcをsys.pathに追加
-test_dir = Path(__file__).parent.parent
-project_root = test_dir.parent
-src_path = project_root / "src"
-if str(src_path) not in sys.path:
-    sys.path.insert(0, str(src_path))
-
 import pytest
 
 from sequence_converter.detectors.label_mapper import MessageLabelMapper
@@ -302,3 +292,41 @@ class TestMessageLabelMapper:
         # Assert
         # 最も近いのは "At Lower Bound" (5px差)
         assert result[150].text == "At Lower Bound", "境界値のテキストが正しく選択されること"
+
+    def test_log_warning_when_no_match_found(self, mapper, caplog):
+        """マッチしなかった矢印に対してログが記録されることをテスト"""
+        import logging
+
+        # Arrange
+        messages = [
+            MessageArrow(
+                start_x=100,
+                end_x=200,
+                y=150,
+                direction=ArrowDirection.LEFT_TO_RIGHT,
+                source_lifeline=100,
+                dest_lifeline=200,
+            )
+        ]
+        # すべて範囲外のOCR結果
+        ocr_results = [
+            OCRResult(
+                text="Too Far",
+                bounding_box=(120, 50, 80, 10),
+                confidence=95.0,
+                color=None,
+            )
+        ]
+
+        # Act
+        with caplog.at_level(logging.WARNING):
+            result = mapper.map_labels_to_messages(messages, ocr_results)
+
+        # Assert
+        assert 150 not in result, "マッチしなかった矢印は結果に含まれないこと"
+        assert len(caplog.records) == 1, "警告ログが1件記録されること"
+        assert (
+            "No label found for message at y=150" in caplog.text
+        ), "適切な警告メッセージが記録されること"
+        assert "start_x=100" in caplog.text, "警告メッセージに矢印の詳細が含まれること"
+        assert "end_x=200" in caplog.text, "警告メッセージに矢印の詳細が含まれること"

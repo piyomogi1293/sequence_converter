@@ -14,6 +14,13 @@ from pydantic import BaseModel, Field, field_validator
 # ============================================================================
 
 
+class OCREngineType(str, Enum):
+    """OCRエンジンタイプ"""
+
+    TESSERACT = "tesseract"
+    EASYOCR = "easyocr"
+
+
 class PreprocessingConfig(BaseModel):
     """前処理設定（外部データ）"""
 

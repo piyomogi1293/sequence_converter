@@ -16,7 +16,7 @@ from sequence_converter.detectors.object_header import ObjectHeaderDetector
 from sequence_converter.detectors.self_call import SelfCallDetector
 from sequence_converter.generator import PlantUMLGenerator
 from sequence_converter.logger import setup_logger
-from sequence_converter.models import ConversionConfig  # , PreprocessingConfig
+from sequence_converter.models import ConversionConfig, OCREngineType  # , PreprocessingConfig
 from sequence_converter.ocr import OCREngine
 from sequence_converter.pipeline import PipelineOrchestrator
 from sequence_converter.preprocessing import ImagePreprocessor
@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 def create_pipeline_orchestrator() -> PipelineOrchestrator:
     """パイプラインオーケストレーターを作成する"""
     # OCRエンジンを作成
-    ocr_engine = OCREngine()
+    ocr_engine = OCREngine(engine_type=OCREngineType.EASYOCR)
 
     # 各種検出器を作成
     preprocessor = ImagePreprocessor()

@@ -41,13 +41,14 @@ class MessageArrowDetector:
         binary_image = preprocessed.binary
 
         # Detect horizontal lines using HoughLinesP
+        # Balanced parameters to detect arrows while reducing false positives
         lines = cv2.HoughLinesP(
             binary_image,
             rho=1,  # Distance resolution in pixels
             theta=np.pi / 180,  # Angle resolution in radians
-            threshold=50,  # Minimum number of intersections to detect a line
-            minLineLength=30,  # Minimum line length
-            maxLineGap=10,  # Maximum gap between line segments
+            threshold=80,  # Minimum number of intersections (balanced)
+            minLineLength=40,  # Minimum line length (balanced)
+            maxLineGap=15,  # Maximum gap between line segments (balanced)
         )
 
         if lines is None:
@@ -77,6 +78,13 @@ class MessageArrowDetector:
                 start_x, end_x = x2, x1
                 # start_y, end_y = y2, y1
 
+            # Check minimum arrow length (should span reasonable distance)
+            # In sequence diagrams, arrows typically span between lifelines
+            arrow_length = end_x - start_x
+            if arrow_length < 60:  # Minimum 60 pixels for significant arrows
+                logger.debug(f"Skipping short line at y={y_avg} (length={arrow_length}px)")
+                continue
+
             # Determine arrow direction by checking for arrowhead at endpoints
             direction = self._detect_arrow_direction(binary_image, start_x, end_x, y_avg)
 
@@ -89,15 +97,23 @@ class MessageArrowDetector:
             source_lifeline = self._match_to_lifeline(start_x, lifelines)
             dest_lifeline = self._match_to_lifeline(end_x, lifelines)
 
-            # Log warning if lifeline matching failed
+            # Skip arrows that don't match both lifelines (likely false positives)
+            # In sequence diagrams, message arrows must connect lifelines
             if source_lifeline is None or dest_lifeline is None:
-                logger.warning(
-                    f"Failed to match arrow at y={y_avg} (start_x={start_x}, end_x={end_x}) "
-                    f"to lifelines. source_lifeline={source_lifeline}, "
-                    f"dest_lifeline={dest_lifeline}. Continuing with remaining arrows."
+                logger.debug(
+                    f"Skipping arrow at y={y_avg} (start_x={start_x}, end_x={end_x}) "
+                    f"- failed to match both lifelines (source={source_lifeline}, "
+                    f"dest={dest_lifeline})"
                 )
-                # Continue processing even if matching failed
-                # The arrow will have None for unmatched lifelines
+                continue
+
+            # Skip self-loops (these should be detected by SelfCallDetector)
+            if source_lifeline == dest_lifeline:
+                logger.debug(
+                    f"Skipping arrow at y={y_avg} - appears to be self-loop "
+                    f"(lifeline={source_lifeline})"
+                )
+                continue
 
             message_arrow = MessageArrow(
                 start_x=start_x,
@@ -113,6 +129,9 @@ class MessageArrowDetector:
                 f"Detected message arrow: {direction.value} at y={y_avg}, "
                 f"start_x={start_x}, end_x={end_x}"
             )
+
+        # Remove duplicate/overlapping arrows (keep the longest one at each Y position)
+        message_arrows = self._remove_duplicates(message_arrows)
 
         # Sort by Y coordinate (top to bottom)
         message_arrows.sort(key=lambda arrow: arrow.y)
@@ -176,6 +195,52 @@ class MessageArrowDetector:
             # Default to LEFT_TO_RIGHT if unclear
             # In real diagrams, most arrows are left-to-right
             return ArrowDirection.LEFT_TO_RIGHT
+
+    def _remove_duplicates(self, arrows: list[MessageArrow]) -> list[MessageArrow]:
+        """Remove duplicate arrows that are too close in Y coordinate.
+
+        Keep the longest arrow when multiple arrows are detected at similar Y positions.
+
+        Args:
+            arrows: List of detected arrows
+
+        Returns:
+            List of arrows with duplicates removed
+        """
+        if not arrows:
+            return []
+
+        # Group arrows by similar Y coordinate (within 10 pixels)
+        groups = []
+        Y_TOLERANCE = 10
+
+        for arrow in arrows:
+            # Find existing group for this arrow
+            found_group = False
+            for group in groups:
+                if abs(group[0].y - arrow.y) <= Y_TOLERANCE:
+                    group.append(arrow)
+                    found_group = True
+                    break
+
+            if not found_group:
+                groups.append([arrow])
+
+        # For each group, keep only the longest arrow
+        result = []
+        for group in groups:
+            if len(group) == 1:
+                result.append(group[0])
+            else:
+                # Keep the arrow with the longest length
+                longest = max(group, key=lambda a: a.end_x - a.start_x)
+                result.append(longest)
+                logger.debug(
+                    f"Removed {len(group) - 1} duplicate arrows at y≈{longest.y}, "
+                    f"kept longest ({longest.end_x - longest.start_x}px)"
+                )
+
+        return result
 
     def _match_to_lifeline(self, x: int, lifelines: list[int]) -> Optional[int]:
         """Match an X coordinate to the nearest lifeline within tolerance.
