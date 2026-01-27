@@ -54,7 +54,30 @@ class ImagePreprocessor:
         try:
             # 画像読み込み（PILで読み込んでからOpenCVに変換）
             pil_image = Image.open(image_path)
+
+            # 透過背景を白背景に変換
+            if pil_image.mode in ("RGBA", "LA", "P"):
+                # 白背景のRGB画像を作成
+                background = Image.new("RGB", pil_image.size, (255, 255, 255))
+
+                # アルファチャンネルがある場合はマスクとして使用
+                if pil_image.mode == "RGBA":
+                    background.paste(pil_image, mask=pil_image.split()[3])
+                elif pil_image.mode == "LA":
+                    background.paste(pil_image, mask=pil_image.split()[1])
+                elif pil_image.mode == "P" and "transparency" in pil_image.info:
+                    # パレットモードで透過情報がある場合
+                    pil_image = pil_image.convert("RGBA")
+                    background.paste(pil_image, mask=pil_image.split()[3])
+                else:
+                    background.paste(pil_image)
+
+                pil_image = background
+                logger.debug(f"Converted transparent background to white background")
+
             image_rgb = np.array(pil_image.convert("RGB"))
+            print(f"converted_to_rgb.png saved")
+            print("=" * 100)
             original_shape = image_rgb.shape[:2]  # (height, width)
 
             # OpenCV形式に変換（RGB -> BGR）
@@ -76,15 +99,20 @@ class ImagePreprocessor:
 
             logger.debug(f"Applied {self.config.noise_removal_method} blur")
 
-            # 二値化
+            # 二値化（反転: 黒い線を白く、白い背景を黒くする）
             if self.config.binary_threshold_method == "otsu":
-                _, binary = cv2.threshold(denoised, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+                _, binary = cv2.threshold(denoised, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
             elif self.config.binary_threshold_method == "adaptive":
                 binary = cv2.adaptiveThreshold(
-                    denoised, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
+                    denoised,
+                    255,
+                    cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                    cv2.THRESH_BINARY_INV,
+                    11,
+                    2,
                 )
             else:
-                _, binary = cv2.threshold(denoised, 127, 255, cv2.THRESH_BINARY)
+                _, binary = cv2.threshold(denoised, 127, 255, cv2.THRESH_BINARY_INV)
 
             logger.debug(f"Applied {self.config.binary_threshold_method} thresholding")
 

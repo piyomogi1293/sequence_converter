@@ -73,10 +73,10 @@ class PreprocessedImage:
 class ObjectHeader(BaseModel):
     """オブジェクトヘッダー検出結果（外部データ）"""
 
-    name: str = Field(..., min_length=1, description="オブジェクト名")
+    name: str = Field(..., description="オブジェクト名（OCRで読めなかった場合は空文字）")
     lifeline_x: int = Field(..., ge=0, description="ライフラインX座標")
     bounding_box: tuple[int, int, int, int] = Field(..., description="(x, y, width, height)")
-    confidence: float = Field(..., ge=-1.0, le=100.0, description="OCR信頼度")
+    confidence: float = Field(..., ge=-1.0, le=100.0, description="OCR信頼度（-1.0は未検出/不明）")
 
 
 class ArrowDirection(str, Enum):

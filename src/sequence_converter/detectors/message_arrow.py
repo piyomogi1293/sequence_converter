@@ -18,7 +18,7 @@ class MessageArrowDetector:
     their direction and lifeline mappings.
     """
 
-    LIFELINE_MATCH_TOLERANCE: int = 20  # ピクセル（制約条件より）
+    LIFELINE_MATCH_TOLERANCE: int = 100  # ピクセル（矢印ヘッドとテキストラベルの幅を考慮）
 
     def __init__(self):
         """Initialize MessageArrowDetector."""
@@ -38,35 +38,71 @@ class MessageArrowDetector:
         logger.debug(f"Lifeline X coordinates: {lifelines}")
 
         # Use binary image for line detection
-        binary_image = preprocessed.binary
+        # preprocessed.binary is already inverted (white lines on black background)
+        # from preprocessing: cv2.THRESH_BINARY_INV makes black lines white
+        # So we use it directly without additional inversion
+        binary_image = preprocessed.binary.copy()
+
+        # Remove text regions using vertical erosion
+        # Text characters have significant vertical extent, while arrow lines are thin
+        # Eroding vertically will remove text but preserve horizontal lines
+        kernel_v_erode = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 5))
+        binary_image = cv2.erode(binary_image, kernel_v_erode, iterations=1)
+        logger.debug("Applied vertical erosion to remove text (1x5 kernel)")
+
+        # Apply strong horizontal morphological closing to connect arrow line fragments
+        # Arrow lines are often fragmented in sequence diagrams
+        # Use very large kernel to bridge gaps and connect fragments into complete lines
+        # This is necessary because arrows can span long distances between lifelines
+        kernel_h = cv2.getStructuringElement(cv2.MORPH_RECT, (100, 1))
+        binary_image = cv2.morphologyEx(binary_image, cv2.MORPH_CLOSE, kernel_h)
+        logger.debug("Applied horizontal morphological closing (100x1 kernel)")
 
         # Detect horizontal lines using HoughLinesP
-        # Balanced parameters to detect arrows while reducing false positives
-        lines = cv2.HoughLinesP(
+        # Use fine theta step to detect lines close to horizontal
+        lines_detected = cv2.HoughLinesP(
             binary_image,
-            rho=1,  # Distance resolution in pixels
-            theta=np.pi / 180,  # Angle resolution in radians
-            threshold=80,  # Minimum number of intersections (balanced)
-            minLineLength=40,  # Minimum line length (balanced)
-            maxLineGap=15,  # Maximum gap between line segments (balanced)
+            rho=1,
+            theta=np.pi / 180,  # Standard angle step
+            threshold=20,  # Lower threshold to detect weaker/shorter lines
+            minLineLength=80,  # Lower minimum to catch shorter arrows
+            maxLineGap=50,  # Larger gap to connect highly fragmented lines
         )
+
+        # Filter to keep only horizontal lines
+        horizontal_lines = []
+        if lines_detected is not None:
+            for line in lines_detected:
+                x1, y1, x2, y2 = line[0]
+                dx = abs(x2 - x1)
+                dy = abs(y2 - y1)
+
+                # Skip if not enough horizontal distance
+                if dx < 80:
+                    continue
+
+                # Calculate angle from horizontal
+                angle = np.degrees(np.arctan2(dy, dx)) if dx > 0 else 90.0
+
+                # Only accept lines within 5 degrees of horizontal
+                # Also check that vertical deviation is small relative to horizontal length
+                if angle <= 5.0 and dy <= max(5, dx * 0.08):
+                    horizontal_lines.append(line)
+
+        lines = np.array(horizontal_lines) if horizontal_lines else None
 
         if lines is None:
             logger.warning("No lines detected in image")
             return []
 
-        logger.debug(f"HoughLinesP detected {len(lines)} line segments")
+        logger.debug(f"HoughLinesP detected {len(lines)} horizontal line segments")
 
         message_arrows = []
 
         for line in lines:
             x1, y1, x2, y2 = line[0]
 
-            # Check if line is approximately horizontal
-            # Allow small vertical deviation (max 5 pixels)
-            if abs(y2 - y1) > 5:
-                continue
-
+            # Note: Lines are already filtered for horizontal orientation
             # Calculate average Y coordinate
             y_avg = (y1 + y2) // 2
 
@@ -81,7 +117,7 @@ class MessageArrowDetector:
             # Check minimum arrow length (should span reasonable distance)
             # In sequence diagrams, arrows typically span between lifelines
             arrow_length = end_x - start_x
-            if arrow_length < 60:  # Minimum 60 pixels for significant arrows
+            if arrow_length < 50:  # Minimum 50 pixels for significant arrows
                 logger.debug(f"Skipping short line at y={y_avg} (length={arrow_length}px)")
                 continue
 

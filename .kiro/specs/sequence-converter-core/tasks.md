@@ -91,6 +91,7 @@ pytesseractまたはEasyOCRを使用してテキスト領域を抽出し、バ�
 - [x] 動作確認スクリプト `test_ocr_engines.py` で実装を検証
 
 **使用例**:
+
 ```python
 # Tesseract使用（デフォルト）
 ocr = OCREngine()
