@@ -93,6 +93,8 @@ class PipelineOrchestrator:
 
         # ステップ1: 画像前処理
         logger.info("Step 1/7: Preprocessing image")
+        # 前処理設定を更新
+        self.preprocessor.config = config.preprocessing
         preprocessed = self.preprocessor.preprocess(str(config.input_path))
         logger.info("Preprocessing completed")
 

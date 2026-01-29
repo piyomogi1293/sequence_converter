@@ -3,22 +3,27 @@ participant "UE"
 participant "P-CSCF"
 participant "I-CSCF"
 participant "HSS"
-participant "S-CSCF"
+participant "S-CSCF_"
+group
 group
 "P-CSCF" -> "P-CSCF" : 
 "I-CSCF" -> "I-CSCF" : 
 "P-CSCF" -> "P-CSCF" : P-CSCF
 "I-CSCF" -> "I-CSCF" : I-CSCF
-"S-CSCF" -> "S-CSCF" : 
-"S-CSCF" -> "S-CSCF" : S-CSCF_
-"UE" <- "P-CSCF" : 1.Register
-"I-CSCF" -> "HSS" : 3.Cx-QuerylCx-Select-Pull
-"I-CSCF" <- "S-CSCF" : Resp
-"HSS" -> "S-CSCF" : 6.Cx-putlCx-Pull
-"HSS" <- "S-CSCF" : 7.Cx-Put ResplCx-Pull
-"HSS" -> "S-CSCF" : 7.Cx-Put ResplCx-Pull
-note over "S-CSCF" : 8.Service Control
-"I-CSCF" -> "HSS" : 9.200OK
+"S-CSCF_" -> "S-CSCF_" : 
+"S-CSCF_" -> "S-CSCF_" : S-CSCF_
+"UE" -> "P-CSCF" : 2.Register_
+"I-CSCF" -> "HSS" : Cx-QuerylCx-Select-Pull
+"I-CSCF" -> "HSS" : 
+"I-CSCF" <- "S-CSCF_" : Cx-Query ResplCx-Select-PulResp
+"I-CSCF" <- "HSS" : 
+"I-CSCF" -> "S-CSCF_" : 5.Register
+"HSS" -> "S-CSCF_" : 6.Cx-putlCx-Pull
+"HSS" <- "S-CSCF_" : 
+"HSS" <- "S-CSCF_" : 7.Cx-Put ResplCx-Pull
+"HSS" -> "S-CSCF_" : 
+"I-CSCF" -> "S-CSCF_" : 10.200 OK
 "UE" -> "P-CSCF" : 11.2o0OK
+end
 end
 @enduml

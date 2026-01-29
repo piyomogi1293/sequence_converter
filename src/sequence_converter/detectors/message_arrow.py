@@ -20,9 +20,21 @@ class MessageArrowDetector:
 
     LIFELINE_MATCH_TOLERANCE: int = 100  # ピクセル（矢印ヘッドとテキストラベルの幅を考慮）
 
-    def __init__(self):
-        """Initialize MessageArrowDetector."""
-        logger.info("MessageArrowDetector initialized")
+    def __init__(self, use_geometric_detector: bool = True):
+        """Initialize MessageArrowDetector.
+
+        Args:
+            use_geometric_detector: If True, use GeometricArrowDetector for improved direction detection
+                                   (default: True for better accuracy)
+        """
+        self.use_geometric_detector = use_geometric_detector
+        if use_geometric_detector:
+            from sequence_converter.detectors.arrow_direction_detectors import (
+                GeometricArrowDetector,
+            )
+
+            self.geometric_detector = GeometricArrowDetector()
+        logger.info(f"MessageArrowDetector initialized (use_geometric={use_geometric_detector})")
 
     def detect(self, preprocessed: PreprocessedImage, lifelines: list[int]) -> list[MessageArrow]:
         """Detect message arrows from horizontal line segments.
@@ -38,10 +50,9 @@ class MessageArrowDetector:
         logger.debug(f"Lifeline X coordinates: {lifelines}")
 
         # Use binary image for line detection
-        # preprocessed.binary is already inverted (white lines on black background)
-        # from preprocessing: cv2.THRESH_BINARY_INV makes black lines white
-        # So we use it directly without additional inversion
-        binary_image = preprocessed.binary.copy()
+        # preprocessed.binary has white background and black lines/text
+        # We need to invert it for morphological operations (white lines on black background)
+        binary_image = cv2.bitwise_not(preprocessed.binary.copy())
 
         # Remove text regions using vertical erosion
         # Text characters have significant vertical extent, while arrow lines are thin
@@ -50,13 +61,12 @@ class MessageArrowDetector:
         binary_image = cv2.erode(binary_image, kernel_v_erode, iterations=1)
         logger.debug("Applied vertical erosion to remove text (1x5 kernel)")
 
-        # Apply strong horizontal morphological closing to connect arrow line fragments
+        # Apply horizontal morphological closing to connect arrow line fragments
         # Arrow lines are often fragmented in sequence diagrams
-        # Use very large kernel to bridge gaps and connect fragments into complete lines
-        # This is necessary because arrows can span long distances between lifelines
-        kernel_h = cv2.getStructuringElement(cv2.MORPH_RECT, (100, 1))
+        # Use moderate kernel to bridge gaps without connecting unrelated lines
+        kernel_h = cv2.getStructuringElement(cv2.MORPH_RECT, (40, 1))
         binary_image = cv2.morphologyEx(binary_image, cv2.MORPH_CLOSE, kernel_h)
-        logger.debug("Applied horizontal morphological closing (100x1 kernel)")
+        logger.debug("Applied horizontal morphological closing (40x1 kernel)")
 
         # Detect horizontal lines using HoughLinesP
         # Use fine theta step to detect lines close to horizontal
@@ -64,9 +74,9 @@ class MessageArrowDetector:
             binary_image,
             rho=1,
             theta=np.pi / 180,  # Standard angle step
-            threshold=20,  # Lower threshold to detect weaker/shorter lines
-            minLineLength=80,  # Lower minimum to catch shorter arrows
-            maxLineGap=50,  # Larger gap to connect highly fragmented lines
+            threshold=30,  # Balanced threshold to detect all arrows
+            minLineLength=80,  # Lower minimum to catch all arrows
+            maxLineGap=40,  # Moderate gap to connect fragments
         )
 
         # Filter to keep only horizontal lines
@@ -122,7 +132,12 @@ class MessageArrowDetector:
                 continue
 
             # Determine arrow direction by checking for arrowhead at endpoints
-            direction = self._detect_arrow_direction(binary_image, start_x, end_x, y_avg)
+            if self.use_geometric_detector:
+                direction = self.geometric_detector.detect_direction(
+                    binary_image, start_x, end_x, y_avg
+                )
+            else:
+                direction = self._detect_arrow_direction(binary_image, start_x, end_x, y_avg)
 
             if direction is None:
                 # If no clear direction detected, skip this line
@@ -130,8 +145,15 @@ class MessageArrowDetector:
                 continue
 
             # Match endpoints to lifelines
-            source_lifeline = self._match_to_lifeline(start_x, lifelines)
-            dest_lifeline = self._match_to_lifeline(end_x, lifelines)
+            # IMPORTANT: Assign source/dest based on arrow direction, not just position
+            if direction == ArrowDirection.LEFT_TO_RIGHT:
+                # Arrow points right: source is left, dest is right
+                source_lifeline = self._match_to_lifeline(start_x, lifelines)
+                dest_lifeline = self._match_to_lifeline(end_x, lifelines)
+            else:  # RIGHT_TO_LEFT
+                # Arrow points left: source is right, dest is left
+                source_lifeline = self._match_to_lifeline(end_x, lifelines)
+                dest_lifeline = self._match_to_lifeline(start_x, lifelines)
 
             # Skip arrows that don't match both lifelines (likely false positives)
             # In sequence diagrams, message arrows must connect lifelines

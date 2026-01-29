@@ -60,7 +60,7 @@ def create_pipeline_orchestrator() -> PipelineOrchestrator:
     )
 
 
-@app.command()
+@app.callback(invoke_without_command=True)
 def convert(
     input_dir: Path = typer.Option(
         Path("input"),
@@ -74,6 +74,17 @@ def convert(
         "-o",
         help="出力ディレクトリ（.pumlファイル）",
     ),
+    save_intermediate: bool = typer.Option(
+        False,
+        "--save-intermediate",
+        "-s",
+        help="前処理の中間画像を保存する",
+    ),
+    intermediate_dir: Path = typer.Option(
+        Path("intermediate"),
+        "--intermediate-dir",
+        help="中間画像の出力ディレクトリ",
+    ),
 ) -> None:
     """
     シーケンス図画像をPlantUMLに変換
@@ -81,6 +92,7 @@ def convert(
     Examples:
         $ sequence-converter convert
         $ sequence-converter convert --input ./images --output ./plantuml
+        $ sequence-converter convert --save-intermediate --intermediate-dir ./debug
     """
     # ロガーをセットアップ
     setup_logger()
@@ -92,6 +104,11 @@ def convert(
 
     # 出力ディレクトリを作成（存在しない場合）
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    # 中間画像ディレクトリを作成（保存する場合）
+    if save_intermediate:
+        intermediate_dir.mkdir(parents=True, exist_ok=True)
+        console.print(f"[cyan]Intermediate images will be saved to {intermediate_dir}[/cyan]")
 
     # 対応している画像形式
     supported_formats = {".png", ".jpg", ".jpeg"}
@@ -123,10 +140,19 @@ def convert(
                 # 出力ファイルパスを生成
                 output_file = output_dir / f"{image_file.stem}.puml"
 
+                # 前処理設定を作成
+                from sequence_converter.models import PreprocessingConfig
+
+                preprocessing_config = PreprocessingConfig(
+                    save_intermediate_images=save_intermediate,
+                    intermediate_output_dir=intermediate_dir if save_intermediate else None,
+                )
+
                 # 変換設定を作成
                 config = ConversionConfig(
                     input_path=image_file,
                     output_path=output_file,
+                    preprocessing=preprocessing_config,
                 )
 
                 # 変換を実行

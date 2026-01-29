@@ -31,6 +31,8 @@ class PreprocessingConfig(BaseModel):
     noise_removal_method: str = Field(
         "median", pattern="^(median|gaussian)$", description="ノイズ除去手法"
     )
+    save_intermediate_images: bool = Field(False, description="中間画像を保存するか")
+    intermediate_output_dir: Optional[Path] = Field(None, description="中間画像の出力ディレクトリ")
 
     @field_validator("blur_kernel_size")
     @classmethod
