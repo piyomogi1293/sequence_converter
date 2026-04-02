@@ -1,0 +1,14 @@
+opencv-python
+pytesseract
+numpy
+pydantic
+typer
+click
+rich
+pytest
+hypothesis
+Pillow
+black
+isort
+flake8
+pre-commit

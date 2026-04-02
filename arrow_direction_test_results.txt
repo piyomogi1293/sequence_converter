@@ -1,0 +1,319 @@
+2026-01-29 09:02:31,251 - __main__ - INFO - Found 1 test cases
+
+2026-01-29 09:02:31,251 - __main__ - INFO - 
+============================================================
+2026-01-29 09:02:31,251 - __main__ - INFO - Testing: 3gpp23228_fig0501.png
+2026-01-29 09:02:31,251 - __main__ - INFO - Method: original
+2026-01-29 09:02:31,251 - __main__ - INFO - ============================================================
+
+[09:02:31] INFO     Preprocessing completed for                                 
+                    /Users/kidoshunpei/projects/sequence-oss/sequence_converter/
+                    input/3gpp23228_fig0501.png                                 
+2026-01-29 09:02:31,279 - sequence_converter.ocr - INFO - EasyOCRBackend initialized with languages: ['ja', 'en'], GPU: False
+2026-01-29 09:02:31,279 - sequence_converter.ocr - INFO - OCREngine initialized with backend: easyocr
+2026-01-29 09:02:31,279 - sequence_converter.detectors.object_header - INFO - ObjectHeaderDetector initialized
+2026-01-29 09:02:31,279 - sequence_converter.detectors.object_header - INFO - Starting object header detection
+2026-01-29 09:02:32,292 - sequence_converter.ocr - INFO - Initializing EasyOCR Reader (this may take a moment)...
+2026-01-29 09:02:32,292 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2026-01-29 09:02:33,539 - sequence_converter.ocr - INFO - EasyOCR Reader initialized successfully
+/Users/kidoshunpei/projects/sequence-oss/sequence_converter/.venv/lib/python3.13/site-packages/torch/utils/data/dataloader.py:692: UserWarning: 'pin_memory' argument is set as true but not supported on MPS now, device pinned memory won't be used.
+  warnings.warn(warn_msg)
+2026-01-29 09:02:34,626 - sequence_converter.detectors.object_header - INFO - Object header detection completed. Found 5 objects: ['UE', 'P-CSCF', 'I-CSCF', 'HSS', 'S-CSCF_']
+2026-01-29 09:02:34,626 - __main__ - INFO - Detected 5 lifelines: [97, 310, 525, 743, 959]
+2026-01-29 09:02:34,626 - sequence_converter.detectors.message_arrow - INFO - MessageArrowDetector initialized
+2026-01-29 09:02:34,626 - sequence_converter.detectors.message_arrow - INFO - Starting message arrow detection with 5 lifelines
+2026-01-29 09:02:34,638 - sequence_converter.detectors.message_arrow - INFO - Message arrow detection completed. Found 12 arrows
+2026-01-29 09:02:34,638 - __main__ - INFO - Detected 12 message arrows
+2026-01-29 09:02:34,638 - __main__ - INFO -   Arrow 1: UE -> P-CSCF [left_to_right] at y=148
+2026-01-29 09:02:34,638 - __main__ - INFO -   Arrow 2: I-CSCF -> HSS [left_to_right] at y=241
+2026-01-29 09:02:34,638 - __main__ - INFO -   Arrow 3: I-CSCF -> HSS [left_to_right] at y=270
+2026-01-29 09:02:34,638 - __main__ - INFO -   Arrow 4: I-CSCF -> S-CSCF_ [right_to_left] at y=323
+2026-01-29 09:02:34,638 - __main__ - INFO -   Arrow 5: I-CSCF -> HSS [right_to_left] at y=352
+2026-01-29 09:02:34,638 - __main__ - INFO -   Arrow 6: I-CSCF -> S-CSCF_ [left_to_right] at y=444
+2026-01-29 09:02:34,638 - __main__ - INFO -   Arrow 7: HSS -> S-CSCF_ [left_to_right] at y=509
+2026-01-29 09:02:34,638 - __main__ - INFO -   Arrow 8: HSS -> S-CSCF_ [right_to_left] at y=541
+2026-01-29 09:02:34,638 - __main__ - INFO -   Arrow 9: HSS -> S-CSCF_ [right_to_left] at y=595
+2026-01-29 09:02:34,638 - __main__ - INFO -   Arrow 10: HSS -> S-CSCF_ [left_to_right] at y=623
+2026-01-29 09:02:34,638 - __main__ - INFO -   Arrow 11: I-CSCF -> S-CSCF_ [left_to_right] at y=808
+2026-01-29 09:02:34,638 - __main__ - INFO -   Arrow 12: UE -> P-CSCF [left_to_right] at y=827
+2026-01-29 09:02:34,638 - sequence_converter.detectors.arrow_direction_validator - INFO - Loaded 10 ground truth arrows from /Users/kidoshunpei/projects/sequence-oss/sequence_converter/output/3gpp23228_fig0501.puml.backup
+2026-01-29 09:02:34,638 - __main__ - INFO - 
+Ground truth arrows: 10
+2026-01-29 09:02:34,638 - __main__ - INFO -   U -> P [left_to_right]: 1. Register
+2026-01-29 09:02:34,639 - __main__ - INFO -   P -> I [left_to_right]: 2. Register
+2026-01-29 09:02:34,639 - __main__ - INFO -   I -> H [left_to_right]: 3. Cx-Query/Cx-Select-Pull
+2026-01-29 09:02:34,639 - __main__ - INFO -   H -> I [left_to_right]: 4. Cx-Query Resp/Cx-Select-Pull Resp
+2026-01-29 09:02:34,639 - __main__ - INFO -   I -> S [left_to_right]: 5. Register
+2026-01-29 09:02:34,639 - __main__ - INFO -   S -> H [left_to_right]: 6. Cx-put/Cx-Pull
+2026-01-29 09:02:34,639 - __main__ - INFO -   H -> S [left_to_right]: 7. Cx-Put Resp/Cx-Pull Resp
+2026-01-29 09:02:34,639 - __main__ - INFO -   S -> I [left_to_right]: 9. 200 OK
+2026-01-29 09:02:34,639 - __main__ - INFO -   I -> P [left_to_right]: 10. 200 OK
+2026-01-29 09:02:34,639 - __main__ - INFO -   P -> U [left_to_right]: 11. 200 OK
+2026-01-29 09:02:34,639 - __main__ - INFO - 
+============================================================
+2026-01-29 09:02:34,639 - __main__ - INFO - Results for original:
+2026-01-29 09:02:34,639 - __main__ - INFO -   Accuracy: 0.0%
+2026-01-29 09:02:34,639 - __main__ - INFO -   Correct: 0/10
+2026-01-29 09:02:34,639 - __main__ - INFO - ============================================================
+2026-01-29 09:02:34,639 - __main__ - INFO - 
+Mismatches (10):
+2026-01-29 09:02:34,639 - __main__ - INFO -   Line 9: U -> P (Expected: left_to_right, Got: NOT_DETECTED) - 1. Register
+2026-01-29 09:02:34,639 - __main__ - INFO -   Line 10: P -> I (Expected: left_to_right, Got: NOT_DETECTED) - 2. Register
+2026-01-29 09:02:34,639 - __main__ - INFO -   Line 11: I -> H (Expected: left_to_right, Got: NOT_DETECTED) - 3. Cx-Query/Cx-Select-Pull
+2026-01-29 09:02:34,639 - __main__ - INFO -   Line 12: H -> I (Expected: left_to_right, Got: NOT_DETECTED) - 4. Cx-Query Resp/Cx-Select-Pull Resp
+2026-01-29 09:02:34,639 - __main__ - INFO -   Line 13: I -> S (Expected: left_to_right, Got: NOT_DETECTED) - 5. Register
+2026-01-29 09:02:34,639 - __main__ - INFO -   Line 14: S -> H (Expected: left_to_right, Got: NOT_DETECTED) - 6. Cx-put/Cx-Pull
+2026-01-29 09:02:34,639 - __main__ - INFO -   Line 15: H -> S (Expected: left_to_right, Got: NOT_DETECTED) - 7. Cx-Put Resp/Cx-Pull Resp
+2026-01-29 09:02:34,639 - __main__ - INFO -   Line 17: S -> I (Expected: left_to_right, Got: NOT_DETECTED) - 9. 200 OK
+2026-01-29 09:02:34,639 - __main__ - INFO -   Line 18: I -> P (Expected: left_to_right, Got: NOT_DETECTED) - 10. 200 OK
+2026-01-29 09:02:34,639 - __main__ - INFO -   Line 19: P -> U (Expected: left_to_right, Got: NOT_DETECTED) - 11. 200 OK
+2026-01-29 09:02:34,639 - __main__ - INFO - 
+============================================================
+2026-01-29 09:02:34,639 - __main__ - INFO - Testing: 3gpp23228_fig0501.png
+2026-01-29 09:02:34,639 - __main__ - INFO - Method: geometric
+2026-01-29 09:02:34,639 - __main__ - INFO - ============================================================
+
+[09:02:34] INFO     Preprocessing completed for                                 
+                    /Users/kidoshunpei/projects/sequence-oss/sequence_converter/
+                    input/3gpp23228_fig0501.png                                 
+2026-01-29 09:02:34,664 - sequence_converter.ocr - INFO - EasyOCRBackend initialized with languages: ['ja', 'en'], GPU: False
+2026-01-29 09:02:34,664 - sequence_converter.ocr - INFO - OCREngine initialized with backend: easyocr
+2026-01-29 09:02:34,664 - sequence_converter.detectors.object_header - INFO - ObjectHeaderDetector initialized
+2026-01-29 09:02:34,664 - sequence_converter.detectors.object_header - INFO - Starting object header detection
+2026-01-29 09:02:34,664 - sequence_converter.ocr - INFO - Initializing EasyOCR Reader (this may take a moment)...
+2026-01-29 09:02:34,664 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2026-01-29 09:02:35,964 - sequence_converter.ocr - INFO - EasyOCR Reader initialized successfully
+2026-01-29 09:02:36,493 - sequence_converter.detectors.object_header - INFO - Object header detection completed. Found 5 objects: ['UE', 'P-CSCF', 'I-CSCF', 'HSS', 'S-CSCF_']
+2026-01-29 09:02:36,493 - __main__ - INFO - Detected 5 lifelines: [97, 310, 525, 743, 959]
+2026-01-29 09:02:36,493 - sequence_converter.detectors.message_arrow - INFO - MessageArrowDetector initialized
+2026-01-29 09:02:36,493 - sequence_converter.detectors.message_arrow - INFO - Starting message arrow detection with 5 lifelines
+2026-01-29 09:02:36,503 - sequence_converter.detectors.message_arrow - INFO - Message arrow detection completed. Found 12 arrows
+2026-01-29 09:02:36,503 - __main__ - INFO - Detected 12 message arrows
+2026-01-29 09:02:36,505 - __main__ - INFO -   Arrow 1: UE -> P-CSCF [left_to_right] at y=148
+2026-01-29 09:02:36,505 - __main__ - WARNING - No clear direction at y=241, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:36,505 - __main__ - INFO -   Arrow 2: I-CSCF -> HSS [left_to_right] at y=241
+2026-01-29 09:02:36,505 - __main__ - WARNING - No clear direction at y=270, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:36,505 - __main__ - INFO -   Arrow 3: I-CSCF -> HSS [left_to_right] at y=270
+2026-01-29 09:02:36,505 - __main__ - WARNING - No clear direction at y=323, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:36,505 - __main__ - INFO -   Arrow 4: I-CSCF -> S-CSCF_ [left_to_right] at y=323
+2026-01-29 09:02:36,505 - __main__ - WARNING - No clear direction at y=352, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:36,505 - __main__ - INFO -   Arrow 5: I-CSCF -> HSS [left_to_right] at y=352
+2026-01-29 09:02:36,505 - __main__ - INFO -   Arrow 6: I-CSCF -> S-CSCF_ [left_to_right] at y=444
+2026-01-29 09:02:36,505 - __main__ - WARNING - No clear direction at y=509, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:36,505 - __main__ - INFO -   Arrow 7: HSS -> S-CSCF_ [left_to_right] at y=509
+2026-01-29 09:02:36,505 - __main__ - INFO -   Arrow 8: HSS -> S-CSCF_ [right_to_left] at y=541
+2026-01-29 09:02:36,505 - __main__ - INFO -   Arrow 9: HSS -> S-CSCF_ [left_to_right] at y=595
+2026-01-29 09:02:36,506 - __main__ - WARNING - No clear direction at y=623, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:36,506 - __main__ - INFO -   Arrow 10: HSS -> S-CSCF_ [left_to_right] at y=623
+2026-01-29 09:02:36,506 - __main__ - WARNING - No clear direction at y=808, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:36,506 - __main__ - INFO -   Arrow 11: I-CSCF -> S-CSCF_ [left_to_right] at y=808
+2026-01-29 09:02:36,506 - __main__ - INFO -   Arrow 12: UE -> P-CSCF [left_to_right] at y=827
+2026-01-29 09:02:36,506 - sequence_converter.detectors.arrow_direction_validator - INFO - Loaded 10 ground truth arrows from /Users/kidoshunpei/projects/sequence-oss/sequence_converter/output/3gpp23228_fig0501.puml.backup
+2026-01-29 09:02:36,506 - __main__ - INFO - 
+Ground truth arrows: 10
+2026-01-29 09:02:36,506 - __main__ - INFO -   U -> P [left_to_right]: 1. Register
+2026-01-29 09:02:36,506 - __main__ - INFO -   P -> I [left_to_right]: 2. Register
+2026-01-29 09:02:36,506 - __main__ - INFO -   I -> H [left_to_right]: 3. Cx-Query/Cx-Select-Pull
+2026-01-29 09:02:36,506 - __main__ - INFO -   H -> I [left_to_right]: 4. Cx-Query Resp/Cx-Select-Pull Resp
+2026-01-29 09:02:36,506 - __main__ - INFO -   I -> S [left_to_right]: 5. Register
+2026-01-29 09:02:36,506 - __main__ - INFO -   S -> H [left_to_right]: 6. Cx-put/Cx-Pull
+2026-01-29 09:02:36,506 - __main__ - INFO -   H -> S [left_to_right]: 7. Cx-Put Resp/Cx-Pull Resp
+2026-01-29 09:02:36,506 - __main__ - INFO -   S -> I [left_to_right]: 9. 200 OK
+2026-01-29 09:02:36,506 - __main__ - INFO -   I -> P [left_to_right]: 10. 200 OK
+2026-01-29 09:02:36,506 - __main__ - INFO -   P -> U [left_to_right]: 11. 200 OK
+2026-01-29 09:02:36,506 - __main__ - INFO - 
+============================================================
+2026-01-29 09:02:36,506 - __main__ - INFO - Results for geometric:
+2026-01-29 09:02:36,506 - __main__ - INFO -   Accuracy: 0.0%
+2026-01-29 09:02:36,506 - __main__ - INFO -   Correct: 0/10
+2026-01-29 09:02:36,506 - __main__ - INFO - ============================================================
+2026-01-29 09:02:36,506 - __main__ - INFO - 
+Mismatches (10):
+2026-01-29 09:02:36,506 - __main__ - INFO -   Line 9: U -> P (Expected: left_to_right, Got: NOT_DETECTED) - 1. Register
+2026-01-29 09:02:36,506 - __main__ - INFO -   Line 10: P -> I (Expected: left_to_right, Got: NOT_DETECTED) - 2. Register
+2026-01-29 09:02:36,506 - __main__ - INFO -   Line 11: I -> H (Expected: left_to_right, Got: NOT_DETECTED) - 3. Cx-Query/Cx-Select-Pull
+2026-01-29 09:02:36,506 - __main__ - INFO -   Line 12: H -> I (Expected: left_to_right, Got: NOT_DETECTED) - 4. Cx-Query Resp/Cx-Select-Pull Resp
+2026-01-29 09:02:36,506 - __main__ - INFO -   Line 13: I -> S (Expected: left_to_right, Got: NOT_DETECTED) - 5. Register
+2026-01-29 09:02:36,506 - __main__ - INFO -   Line 14: S -> H (Expected: left_to_right, Got: NOT_DETECTED) - 6. Cx-put/Cx-Pull
+2026-01-29 09:02:36,506 - __main__ - INFO -   Line 15: H -> S (Expected: left_to_right, Got: NOT_DETECTED) - 7. Cx-Put Resp/Cx-Pull Resp
+2026-01-29 09:02:36,506 - __main__ - INFO -   Line 17: S -> I (Expected: left_to_right, Got: NOT_DETECTED) - 9. 200 OK
+2026-01-29 09:02:36,506 - __main__ - INFO -   Line 18: I -> P (Expected: left_to_right, Got: NOT_DETECTED) - 10. 200 OK
+2026-01-29 09:02:36,506 - __main__ - INFO -   Line 19: P -> U (Expected: left_to_right, Got: NOT_DETECTED) - 11. 200 OK
+2026-01-29 09:02:36,506 - __main__ - INFO - 
+============================================================
+2026-01-29 09:02:36,506 - __main__ - INFO - Testing: 3gpp23228_fig0501.png
+2026-01-29 09:02:36,506 - __main__ - INFO - Method: template
+2026-01-29 09:02:36,506 - __main__ - INFO - ============================================================
+
+[09:02:36] INFO     Preprocessing completed for                                 
+                    /Users/kidoshunpei/projects/sequence-oss/sequence_converter/
+                    input/3gpp23228_fig0501.png                                 
+2026-01-29 09:02:36,524 - sequence_converter.ocr - INFO - EasyOCRBackend initialized with languages: ['ja', 'en'], GPU: False
+2026-01-29 09:02:36,524 - sequence_converter.ocr - INFO - OCREngine initialized with backend: easyocr
+2026-01-29 09:02:36,524 - sequence_converter.detectors.object_header - INFO - ObjectHeaderDetector initialized
+2026-01-29 09:02:36,524 - sequence_converter.detectors.object_header - INFO - Starting object header detection
+2026-01-29 09:02:36,524 - sequence_converter.ocr - INFO - Initializing EasyOCR Reader (this may take a moment)...
+2026-01-29 09:02:36,524 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2026-01-29 09:02:37,731 - sequence_converter.ocr - INFO - EasyOCR Reader initialized successfully
+2026-01-29 09:02:38,252 - sequence_converter.detectors.object_header - INFO - Object header detection completed. Found 5 objects: ['UE', 'P-CSCF', 'I-CSCF', 'HSS', 'S-CSCF_']
+2026-01-29 09:02:38,252 - __main__ - INFO - Detected 5 lifelines: [97, 310, 525, 743, 959]
+2026-01-29 09:02:38,252 - sequence_converter.detectors.message_arrow - INFO - MessageArrowDetector initialized
+2026-01-29 09:02:38,252 - sequence_converter.detectors.message_arrow - INFO - Starting message arrow detection with 5 lifelines
+2026-01-29 09:02:38,262 - sequence_converter.detectors.message_arrow - INFO - Message arrow detection completed. Found 12 arrows
+2026-01-29 09:02:38,262 - __main__ - INFO - Detected 12 message arrows
+2026-01-29 09:02:38,265 - __main__ - WARNING - No clear direction at y=148, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:38,265 - __main__ - INFO -   Arrow 1: UE -> P-CSCF [left_to_right] at y=148
+2026-01-29 09:02:38,265 - __main__ - WARNING - No clear direction at y=241, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:38,265 - __main__ - INFO -   Arrow 2: I-CSCF -> HSS [left_to_right] at y=241
+2026-01-29 09:02:38,265 - __main__ - WARNING - No clear direction at y=270, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:38,265 - __main__ - INFO -   Arrow 3: I-CSCF -> HSS [left_to_right] at y=270
+2026-01-29 09:02:38,266 - __main__ - WARNING - No clear direction at y=323, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:38,266 - __main__ - INFO -   Arrow 4: I-CSCF -> S-CSCF_ [left_to_right] at y=323
+2026-01-29 09:02:38,266 - __main__ - WARNING - No clear direction at y=352, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:38,266 - __main__ - INFO -   Arrow 5: I-CSCF -> HSS [left_to_right] at y=352
+2026-01-29 09:02:38,266 - __main__ - WARNING - No clear direction at y=444, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:38,266 - __main__ - INFO -   Arrow 6: I-CSCF -> S-CSCF_ [left_to_right] at y=444
+2026-01-29 09:02:38,266 - __main__ - WARNING - No clear direction at y=509, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:38,266 - __main__ - INFO -   Arrow 7: HSS -> S-CSCF_ [left_to_right] at y=509
+2026-01-29 09:02:38,266 - __main__ - WARNING - No clear direction at y=541, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:38,266 - __main__ - INFO -   Arrow 8: HSS -> S-CSCF_ [left_to_right] at y=541
+2026-01-29 09:02:38,266 - __main__ - WARNING - No clear direction at y=595, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:38,266 - __main__ - INFO -   Arrow 9: HSS -> S-CSCF_ [left_to_right] at y=595
+2026-01-29 09:02:38,266 - __main__ - WARNING - No clear direction at y=623, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:38,266 - __main__ - INFO -   Arrow 10: HSS -> S-CSCF_ [left_to_right] at y=623
+2026-01-29 09:02:38,266 - __main__ - WARNING - No clear direction at y=808, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:38,266 - __main__ - INFO -   Arrow 11: I-CSCF -> S-CSCF_ [left_to_right] at y=808
+2026-01-29 09:02:38,266 - __main__ - WARNING - No clear direction at y=827, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:38,266 - __main__ - INFO -   Arrow 12: UE -> P-CSCF [left_to_right] at y=827
+2026-01-29 09:02:38,266 - sequence_converter.detectors.arrow_direction_validator - INFO - Loaded 10 ground truth arrows from /Users/kidoshunpei/projects/sequence-oss/sequence_converter/output/3gpp23228_fig0501.puml.backup
+2026-01-29 09:02:38,266 - __main__ - INFO - 
+Ground truth arrows: 10
+2026-01-29 09:02:38,266 - __main__ - INFO -   U -> P [left_to_right]: 1. Register
+2026-01-29 09:02:38,266 - __main__ - INFO -   P -> I [left_to_right]: 2. Register
+2026-01-29 09:02:38,266 - __main__ - INFO -   I -> H [left_to_right]: 3. Cx-Query/Cx-Select-Pull
+2026-01-29 09:02:38,266 - __main__ - INFO -   H -> I [left_to_right]: 4. Cx-Query Resp/Cx-Select-Pull Resp
+2026-01-29 09:02:38,266 - __main__ - INFO -   I -> S [left_to_right]: 5. Register
+2026-01-29 09:02:38,266 - __main__ - INFO -   S -> H [left_to_right]: 6. Cx-put/Cx-Pull
+2026-01-29 09:02:38,266 - __main__ - INFO -   H -> S [left_to_right]: 7. Cx-Put Resp/Cx-Pull Resp
+2026-01-29 09:02:38,266 - __main__ - INFO -   S -> I [left_to_right]: 9. 200 OK
+2026-01-29 09:02:38,266 - __main__ - INFO -   I -> P [left_to_right]: 10. 200 OK
+2026-01-29 09:02:38,266 - __main__ - INFO -   P -> U [left_to_right]: 11. 200 OK
+2026-01-29 09:02:38,266 - __main__ - INFO - 
+============================================================
+2026-01-29 09:02:38,266 - __main__ - INFO - Results for template:
+2026-01-29 09:02:38,266 - __main__ - INFO -   Accuracy: 0.0%
+2026-01-29 09:02:38,266 - __main__ - INFO -   Correct: 0/10
+2026-01-29 09:02:38,266 - __main__ - INFO - ============================================================
+2026-01-29 09:02:38,266 - __main__ - INFO - 
+Mismatches (10):
+2026-01-29 09:02:38,266 - __main__ - INFO -   Line 9: U -> P (Expected: left_to_right, Got: NOT_DETECTED) - 1. Register
+2026-01-29 09:02:38,266 - __main__ - INFO -   Line 10: P -> I (Expected: left_to_right, Got: NOT_DETECTED) - 2. Register
+2026-01-29 09:02:38,266 - __main__ - INFO -   Line 11: I -> H (Expected: left_to_right, Got: NOT_DETECTED) - 3. Cx-Query/Cx-Select-Pull
+2026-01-29 09:02:38,266 - __main__ - INFO -   Line 12: H -> I (Expected: left_to_right, Got: NOT_DETECTED) - 4. Cx-Query Resp/Cx-Select-Pull Resp
+2026-01-29 09:02:38,266 - __main__ - INFO -   Line 13: I -> S (Expected: left_to_right, Got: NOT_DETECTED) - 5. Register
+2026-01-29 09:02:38,266 - __main__ - INFO -   Line 14: S -> H (Expected: left_to_right, Got: NOT_DETECTED) - 6. Cx-put/Cx-Pull
+2026-01-29 09:02:38,266 - __main__ - INFO -   Line 15: H -> S (Expected: left_to_right, Got: NOT_DETECTED) - 7. Cx-Put Resp/Cx-Pull Resp
+2026-01-29 09:02:38,266 - __main__ - INFO -   Line 17: S -> I (Expected: left_to_right, Got: NOT_DETECTED) - 9. 200 OK
+2026-01-29 09:02:38,266 - __main__ - INFO -   Line 18: I -> P (Expected: left_to_right, Got: NOT_DETECTED) - 10. 200 OK
+2026-01-29 09:02:38,266 - __main__ - INFO -   Line 19: P -> U (Expected: left_to_right, Got: NOT_DETECTED) - 11. 200 OK
+2026-01-29 09:02:38,267 - __main__ - INFO - 
+============================================================
+2026-01-29 09:02:38,267 - __main__ - INFO - Testing: 3gpp23228_fig0501.png
+2026-01-29 09:02:38,267 - __main__ - INFO - Method: combined
+2026-01-29 09:02:38,267 - __main__ - INFO - ============================================================
+
+[09:02:38] INFO     Preprocessing completed for                                 
+                    /Users/kidoshunpei/projects/sequence-oss/sequence_converter/
+                    input/3gpp23228_fig0501.png                                 
+2026-01-29 09:02:38,284 - sequence_converter.ocr - INFO - EasyOCRBackend initialized with languages: ['ja', 'en'], GPU: False
+2026-01-29 09:02:38,284 - sequence_converter.ocr - INFO - OCREngine initialized with backend: easyocr
+2026-01-29 09:02:38,284 - sequence_converter.detectors.object_header - INFO - ObjectHeaderDetector initialized
+2026-01-29 09:02:38,284 - sequence_converter.detectors.object_header - INFO - Starting object header detection
+2026-01-29 09:02:38,284 - sequence_converter.ocr - INFO - Initializing EasyOCR Reader (this may take a moment)...
+2026-01-29 09:02:38,284 - easyocr.easyocr - WARNING - Using CPU. Note: This module is much faster with a GPU.
+2026-01-29 09:02:39,487 - sequence_converter.ocr - INFO - EasyOCR Reader initialized successfully
+2026-01-29 09:02:40,013 - sequence_converter.detectors.object_header - INFO - Object header detection completed. Found 5 objects: ['UE', 'P-CSCF', 'I-CSCF', 'HSS', 'S-CSCF_']
+2026-01-29 09:02:40,013 - __main__ - INFO - Detected 5 lifelines: [97, 310, 525, 743, 959]
+2026-01-29 09:02:40,013 - sequence_converter.detectors.message_arrow - INFO - MessageArrowDetector initialized
+2026-01-29 09:02:40,013 - sequence_converter.detectors.message_arrow - INFO - Starting message arrow detection with 5 lifelines
+2026-01-29 09:02:40,024 - sequence_converter.detectors.message_arrow - INFO - Message arrow detection completed. Found 12 arrows
+2026-01-29 09:02:40,024 - __main__ - INFO - Detected 12 message arrows
+2026-01-29 09:02:40,024 - __main__ - INFO -   Arrow 1: UE -> P-CSCF [left_to_right] at y=148
+2026-01-29 09:02:40,024 - __main__ - WARNING - No clear direction at y=241, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:40,024 - __main__ - INFO -   Arrow 2: I-CSCF -> HSS [left_to_right] at y=241
+2026-01-29 09:02:40,024 - __main__ - WARNING - No clear direction at y=270, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:40,024 - __main__ - INFO -   Arrow 3: I-CSCF -> HSS [left_to_right] at y=270
+2026-01-29 09:02:40,024 - __main__ - WARNING - No clear direction at y=323, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:40,025 - __main__ - INFO -   Arrow 4: I-CSCF -> S-CSCF_ [left_to_right] at y=323
+2026-01-29 09:02:40,025 - __main__ - WARNING - No clear direction at y=352, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:40,025 - __main__ - INFO -   Arrow 5: I-CSCF -> HSS [left_to_right] at y=352
+2026-01-29 09:02:40,025 - __main__ - INFO -   Arrow 6: I-CSCF -> S-CSCF_ [left_to_right] at y=444
+2026-01-29 09:02:40,025 - __main__ - WARNING - No clear direction at y=509, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:40,025 - __main__ - INFO -   Arrow 7: HSS -> S-CSCF_ [left_to_right] at y=509
+2026-01-29 09:02:40,025 - __main__ - INFO -   Arrow 8: HSS -> S-CSCF_ [right_to_left] at y=541
+2026-01-29 09:02:40,025 - __main__ - INFO -   Arrow 9: HSS -> S-CSCF_ [left_to_right] at y=595
+2026-01-29 09:02:40,025 - __main__ - WARNING - No clear direction at y=623, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:40,025 - __main__ - INFO -   Arrow 10: HSS -> S-CSCF_ [left_to_right] at y=623
+2026-01-29 09:02:40,026 - __main__ - WARNING - No clear direction at y=808, defaulting to LEFT_TO_RIGHT
+2026-01-29 09:02:40,026 - __main__ - INFO -   Arrow 11: I-CSCF -> S-CSCF_ [left_to_right] at y=808
+2026-01-29 09:02:40,026 - __main__ - INFO -   Arrow 12: UE -> P-CSCF [left_to_right] at y=827
+2026-01-29 09:02:40,026 - sequence_converter.detectors.arrow_direction_validator - INFO - Loaded 10 ground truth arrows from /Users/kidoshunpei/projects/sequence-oss/sequence_converter/output/3gpp23228_fig0501.puml.backup
+2026-01-29 09:02:40,026 - __main__ - INFO - 
+Ground truth arrows: 10
+2026-01-29 09:02:40,026 - __main__ - INFO -   U -> P [left_to_right]: 1. Register
+2026-01-29 09:02:40,026 - __main__ - INFO -   P -> I [left_to_right]: 2. Register
+2026-01-29 09:02:40,026 - __main__ - INFO -   I -> H [left_to_right]: 3. Cx-Query/Cx-Select-Pull
+2026-01-29 09:02:40,026 - __main__ - INFO -   H -> I [left_to_right]: 4. Cx-Query Resp/Cx-Select-Pull Resp
+2026-01-29 09:02:40,026 - __main__ - INFO -   I -> S [left_to_right]: 5. Register
+2026-01-29 09:02:40,026 - __main__ - INFO -   S -> H [left_to_right]: 6. Cx-put/Cx-Pull
+2026-01-29 09:02:40,026 - __main__ - INFO -   H -> S [left_to_right]: 7. Cx-Put Resp/Cx-Pull Resp
+2026-01-29 09:02:40,026 - __main__ - INFO -   S -> I [left_to_right]: 9. 200 OK
+2026-01-29 09:02:40,026 - __main__ - INFO -   I -> P [left_to_right]: 10. 200 OK
+2026-01-29 09:02:40,026 - __main__ - INFO -   P -> U [left_to_right]: 11. 200 OK
+2026-01-29 09:02:40,026 - __main__ - INFO - 
+============================================================
+2026-01-29 09:02:40,026 - __main__ - INFO - Results for combined:
+2026-01-29 09:02:40,026 - __main__ - INFO -   Accuracy: 0.0%
+2026-01-29 09:02:40,026 - __main__ - INFO -   Correct: 0/10
+2026-01-29 09:02:40,026 - __main__ - INFO - ============================================================
+2026-01-29 09:02:40,026 - __main__ - INFO - 
+Mismatches (10):
+2026-01-29 09:02:40,026 - __main__ - INFO -   Line 9: U -> P (Expected: left_to_right, Got: NOT_DETECTED) - 1. Register
+2026-01-29 09:02:40,026 - __main__ - INFO -   Line 10: P -> I (Expected: left_to_right, Got: NOT_DETECTED) - 2. Register
+2026-01-29 09:02:40,026 - __main__ - INFO -   Line 11: I -> H (Expected: left_to_right, Got: NOT_DETECTED) - 3. Cx-Query/Cx-Select-Pull
+2026-01-29 09:02:40,026 - __main__ - INFO -   Line 12: H -> I (Expected: left_to_right, Got: NOT_DETECTED) - 4. Cx-Query Resp/Cx-Select-Pull Resp
+2026-01-29 09:02:40,026 - __main__ - INFO -   Line 13: I -> S (Expected: left_to_right, Got: NOT_DETECTED) - 5. Register
+2026-01-29 09:02:40,026 - __main__ - INFO -   Line 14: S -> H (Expected: left_to_right, Got: NOT_DETECTED) - 6. Cx-put/Cx-Pull
+2026-01-29 09:02:40,026 - __main__ - INFO -   Line 15: H -> S (Expected: left_to_right, Got: NOT_DETECTED) - 7. Cx-Put Resp/Cx-Pull Resp
+2026-01-29 09:02:40,026 - __main__ - INFO -   Line 17: S -> I (Expected: left_to_right, Got: NOT_DETECTED) - 9. 200 OK
+2026-01-29 09:02:40,026 - __main__ - INFO -   Line 18: I -> P (Expected: left_to_right, Got: NOT_DETECTED) - 10. 200 OK
+2026-01-29 09:02:40,026 - __main__ - INFO -   Line 19: P -> U (Expected: left_to_right, Got: NOT_DETECTED) - 11. 200 OK
+2026-01-29 09:02:40,026 - __main__ - INFO - 
+
+================================================================================
+2026-01-29 09:02:40,026 - __main__ - INFO - SUMMARY
+2026-01-29 09:02:40,026 - __main__ - INFO - ================================================================================
+
+2026-01-29 09:02:40,026 - __main__ - INFO - ORIGINAL:
+2026-01-29 09:02:40,026 - __main__ - INFO -   Overall Accuracy: 0.0% (0/10)
+2026-01-29 09:02:40,026 - __main__ - INFO -   Per-image results:
+2026-01-29 09:02:40,026 - __main__ - INFO -     3gpp23228_fig0501.png: 0.0% (0/10)
+2026-01-29 09:02:40,026 - __main__ - INFO - 
+2026-01-29 09:02:40,026 - __main__ - INFO - GEOMETRIC:
+2026-01-29 09:02:40,026 - __main__ - INFO -   Overall Accuracy: 0.0% (0/10)
+2026-01-29 09:02:40,026 - __main__ - INFO -   Per-image results:
+2026-01-29 09:02:40,026 - __main__ - INFO -     3gpp23228_fig0501.png: 0.0% (0/10)
+2026-01-29 09:02:40,026 - __main__ - INFO - 
+2026-01-29 09:02:40,026 - __main__ - INFO - TEMPLATE:
+2026-01-29 09:02:40,026 - __main__ - INFO -   Overall Accuracy: 0.0% (0/10)
+2026-01-29 09:02:40,026 - __main__ - INFO -   Per-image results:
+2026-01-29 09:02:40,026 - __main__ - INFO -     3gpp23228_fig0501.png: 0.0% (0/10)
+2026-01-29 09:02:40,026 - __main__ - INFO - 
+2026-01-29 09:02:40,026 - __main__ - INFO - COMBINED:
+2026-01-29 09:02:40,026 - __main__ - INFO -   Overall Accuracy: 0.0% (0/10)
+2026-01-29 09:02:40,026 - __main__ - INFO -   Per-image results:
+2026-01-29 09:02:40,026 - __main__ - INFO -     3gpp23228_fig0501.png: 0.0% (0/10)
+2026-01-29 09:02:40,026 - __main__ - INFO - 
+2026-01-29 09:02:40,026 - __main__ - INFO - ================================================================================
+2026-01-29 09:02:40,026 - __main__ - INFO - BEST METHOD: ORIGINAL (0.0%)
+2026-01-29 09:02:40,026 - __main__ - INFO - ================================================================================

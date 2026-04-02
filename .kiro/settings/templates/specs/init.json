@@ -1,0 +1,16 @@
+{
+  "feature_name": "{{FEATURE_NAME}}",
+  "created_at": "{{TIMESTAMP}}",
+  "language": "ja",
+  "project_description": "{{PROJECT_DESCRIPTION}}",
+  "status": {
+    "requirements": "pending",
+    "design": "pending",
+    "tasks": "pending",
+    "implementation": "pending"
+  },
+  "metadata": {
+    "version": "1.0",
+    "spec_format": "kiro-ai-dlc"
+  }
+}
